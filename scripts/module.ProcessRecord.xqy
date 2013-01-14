@@ -82,39 +82,40 @@ declare function processrecord:processrecord
         as item()*
 {
     let $df001 := xs:string($record/marcxml:controlfield[@tag eq "001"][1])
-    let $df010 := xs:string($record/marcxml:controlfield[@tag eq "010"][1]/marcxml:subfield[@code eq "a"][1])
+    let $id := fn:replace($df001, "([a-zA-Z])", "")
+        
+    let $idLen := fn:string-length($id)
+    let $paddedID :=
+        if ( $idLen eq 1 ) then
+            fn:concat("10000000000" , $id)
+        else if ( $idLen eq 2 ) then
+            fn:concat("1000000000" , $id)
+        else if ( $idLen eq 3 ) then
+            fn:concat("100000000" , $id)
+        else if ( $idLen eq 4 ) then
+            fn:concat("10000000" , $id)
+        else if ( $idLen eq 5 ) then
+            fn:concat("1000000" , $id)
+        else if ( $idLen eq 6 ) then
+            fn:concat("100000" , $id)
+        else if ( $idLen eq 7 ) then
+            fn:concat("10000" , $id)
+        else if ( $idLen eq 8 ) then
+            fn:concat("1000" , $id)
+        else if ( $idLen eq 9 ) then
+            fn:concat("100" , $id)
+        else if ( $idLen eq 10 ) then
+            fn:concat("10" , $id)
+        else if ( $idLen eq 11 ) then
+            fn:concat("1" , $id)
+        else
+            $id
+                
+    let $df010 := fn:normalize-space(xs:string($record/marcxml:controlfield[@tag eq "010"][1]/marcxml:subfield[@code eq "a"][1]))
     let $subjects := $record/marcxml:datafield[fn:matches(xs:string(@tag), "600|610|611|630|648|650|651|655")]
     let $lines := 
         for $s at $pos in $subjects
         let $tag := xs:string($s/@tag)
-        let $id := fn:replace($df001, "([a-zA-Z])", "")
-        
-        let $idLen := fn:string-length($id)
-        let $paddedID :=
-            if ( $idLen eq 1 ) then
-                fn:concat("10000000000" , $id)
-            else if ( $idLen eq 2 ) then
-                fn:concat("1000000000" , $id)
-            else if ( $idLen eq 3 ) then
-                fn:concat("100000000" , $id)
-            else if ( $idLen eq 4 ) then
-                fn:concat("10000000" , $id)
-            else if ( $idLen eq 5 ) then
-                fn:concat("1000000" , $id)
-            else if ( $idLen eq 6 ) then
-                fn:concat("100000" , $id)
-            else if ( $idLen eq 7 ) then
-                fn:concat("10000" , $id)
-            else if ( $idLen eq 8 ) then
-                fn:concat("1000" , $id)
-            else if ( $idLen eq 9 ) then
-                fn:concat("100" , $id)
-            else if ( $idLen eq 10 ) then
-                fn:concat("10" , $id)
-            else if ( $idLen eq 11 ) then
-                fn:concat("1" , $id)
-            else
-                $id
                 
         let $posid := xs:string($pos)
         let $posidLen := fn:string-length($posid)
@@ -128,7 +129,7 @@ declare function processrecord:processrecord
             else
                 $posid
         
-        let $id := fn:concat($paddedID, $paddedPosID)
+        let $dbid := fn:concat($paddedID, $paddedPosID)
         let $aplus := fn:string-join($s/marcxml:subfield[fn:not( fn:matches(@code, "v|x|y|z|0|2|3|4|6|8") )], " ")
         let $subdivisionString := fn:string-join($s/marcxml:subfield[fn:matches(@code, "v|x|y|z")], "--")
         let $heading := 
@@ -172,6 +173,6 @@ declare function processrecord:processrecord
         let $subdivYcount := fn:count($s/marcxml:subfield[fn:matches(@code, "y")])
         let $subdivZcount := fn:count($s/marcxml:subfield[fn:matches(@code, "z")])
         return
-            fn:concat($id, "&#09;", $df001, "&#09;", $df010, "&#09;", $heading, "&#09;", $headingStripped, "&#09;", $source, "&#09;", $tag, "&#09;", $fieldOrder, "&#09;", $componentsCount, "&#09;", $subdivsCount, "&#09;", $subdivVcount, "&#09;", $subdivXcount, "&#09;", $subdivYcount, "&#09;", $subdivZcount)
+            fn:concat($dbid, "&#09;", $df001, "&#09;", $df010, "&#09;", $heading, "&#09;", $headingStripped, "&#09;", $source, "&#09;", $tag, "&#09;", $fieldOrder, "&#09;", $componentsCount, "&#09;", $subdivsCount, "&#09;", $subdivVcount, "&#09;", $subdivXcount, "&#09;", $subdivYcount, "&#09;", $subdivZcount)
     return $lines
 };
