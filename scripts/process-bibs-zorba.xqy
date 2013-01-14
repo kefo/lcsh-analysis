@@ -49,6 +49,7 @@ CREATE TABLE subjects (
   `lccn` char(10) NOT NULL,
   `heading` char(254) NOT NULL,
   `headingStripped` char(254) NOT NULL,
+  `source` char(20) NOT NULL,
   `field` int(3) NOT NULL,
   `subfields` char(12) NOT NULL,
   `componentsCount` int(1) NOT NULL,
@@ -59,6 +60,7 @@ CREATE TABLE subjects (
   `zCount` int(1) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MYISAM DEFAULT CHARSET="UTF8";
+
 
 select headingStripped, count(*) as hsCount from subjects group by headingStripped HAVING hsCount > 2 order by hsCount DESC LIMIT 0,10;
 SELECT hsCount, count(*) FROM (select headingStripped, count(*) as hsCount from subjects group by headingStripped) as tempTBL group by hsCount;
