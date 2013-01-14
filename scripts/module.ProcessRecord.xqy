@@ -49,6 +49,7 @@ CREATE TABLE subjects (
   `lccn` char(10) NOT NULL,
   `heading` char(254) NOT NULL,
   `headingStripped` char(254) NOT NULL,
+  `source` char(20) NOT NULL,
   `field` int(3) NOT NULL,
   `subfields` char(12) NOT NULL,
   `componentsCount` int(1) NOT NULL,
@@ -82,7 +83,7 @@ declare function processrecord:processrecord
 {
     let $df001 := xs:string($record/marcxml:controlfield[@tag eq "001"][1])
     let $df010 := xs:string($record/marcxml:controlfield[@tag eq "010"][1]/marcxml:subfield[@code eq "a"][1])
-    let $subjects := $record/marcxml:datafield[fn:matches(xs:string(@tag), "600|610|611|630|648|650|651") and xs:string(@ind2) eq "0"]
+    let $subjects := $record/marcxml:datafield[fn:matches(xs:string(@tag), "600|610|611|630|648|650|651|655")]
     let $lines := 
         for $s at $pos in $subjects
         let $tag := xs:string($s/@tag)
@@ -137,6 +138,29 @@ declare function processrecord:processrecord
                 $aplus
         let $headingStripped := fn:replace($heading, " |\.|\(|\)|,|:", "")
         let $headingStripped := fn:replace($headingStripped, '"', "")
+        let $headingStripped := fn:replace($headingStripped, '\[fromoldcatalog\]', "")
+        
+        let $ind2 := xs:string($s/@ind2)
+        let $source := 
+            if ($ind2 eq "0") then
+                "lcsh"
+            else if ($ind2 eq "1") then
+                "lcshj"
+            else if ($ind2 eq "2") then
+                "mesh"
+            else if ($ind2 eq "3") then
+                "nal"
+            else if ($ind2 eq "4") then
+                "not-specified"
+            else if ($ind2 eq "5") then
+                "lac"
+            else if ($ind2 eq "6") then
+                "rvm"
+            else if ($ind2 eq "7") then
+                let $sf2 := xs:string($s/marcxml:subfield[xs:string(@code) eq "2"][1])
+                return $sf2
+            else 
+                ""
         
         let $fieldOrder := fn:string-join($s/marcxml:subfield[fn:matches(@code, "a|t|v|x|y|z")]/@code, "")
         
@@ -148,6 +172,6 @@ declare function processrecord:processrecord
         let $subdivYcount := fn:count($s/marcxml:subfield[fn:matches(@code, "y")])
         let $subdivZcount := fn:count($s/marcxml:subfield[fn:matches(@code, "z")])
         return
-            fn:concat($id, "&#09;", $df001, "&#09;", $df010, "&#09;", $heading, "&#09;", $headingStripped, "&#09;", $tag, "&#09;", $fieldOrder, "&#09;", $componentsCount, "&#09;", $subdivsCount, "&#09;", $subdivVcount, "&#09;", $subdivXcount, "&#09;", $subdivYcount, "&#09;", $subdivZcount)
+            fn:concat($id, "&#09;", $df001, "&#09;", $df010, "&#09;", $heading, "&#09;", $headingStripped, "&#09;", $source, "&#09;", $tag, "&#09;", $fieldOrder, "&#09;", $componentsCount, "&#09;", $subdivsCount, "&#09;", $subdivVcount, "&#09;", $subdivXcount, "&#09;", $subdivYcount, "&#09;", $subdivZcount)
     return $lines
 };
