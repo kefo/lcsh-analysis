@@ -6,6 +6,7 @@
 
 *.log
 *.gz
+*.tgz
 
 bug/
 
