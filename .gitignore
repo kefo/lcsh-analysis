@@ -4,4 +4,8 @@
 *.pyc
 *-rewrite.py
 
+*.log
+*.gz
+
+bug/
 
