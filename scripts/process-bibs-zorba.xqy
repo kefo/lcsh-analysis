@@ -49,7 +49,7 @@ CREATE TABLE subjects (
   `lccn` char(10) NOT NULL,
   `heading` char(254) NOT NULL,
   `headingStripped` char(254) NOT NULL,
-  `source` char(20) NOT NULL,
+  `source` char(40) NOT NULL,
   `field` int(3) NOT NULL,
   `subfields` char(12) NOT NULL,
   `componentsCount` int(1) NOT NULL,
