@@ -41,6 +41,7 @@ MARCDF = "{http://www.loc.gov/MARC21/slim}datafield"
 MARCSF = "{http://www.loc.gov/MARC21/slim}subfield"
 
 DATADIR = "../data/xml/"
+DATADIR = "../data/xml-bfid2/"
 
 FILES = glob.glob(DATADIR + '*.xml')
 
@@ -49,7 +50,7 @@ fo.close()
 
 for f in FILES:
     # print 'Current f :', f
-    zorbaCommand = "zorba -i -r -f -q process-bibs-zorba.xqy -e marcxmluri:=\"" + f + "\" --omit-xml-declaration"  # lint:ok
+    zorbaCommand = "zorba -i -r -f -q process-bibs-zorba.xqy -e marcxmluri:=\"" + f + "\" --omit-xml-declaration"
     # print zorbaCommand
     xresult, xerrors = Popen([zorbaCommand], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True).communicate()
     if xresult == "":
