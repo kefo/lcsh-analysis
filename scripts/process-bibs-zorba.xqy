@@ -49,22 +49,36 @@ CREATE TABLE subjects (
   `lccn` char(10) NOT NULL,
   `heading` char(254) NOT NULL,
   `headingStripped` char(254) NOT NULL,
-  `source` char(40) NOT NULL,
+  `source` char(30) NOT NULL,
   `field` int(3) NOT NULL,
-  `subfields` char(12) NOT NULL,
+  `subfields` char(20) NOT NULL,
   `componentsCount` int(1) NOT NULL,
   `subdivsCount` int(1) NOT NULL,
   `vCount` int(1) NOT NULL,
   `xCount` int(1) NOT NULL,
   `yCount` int(1) NOT NULL,
   `zCount` int(1) NOT NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  INDEX (headingStripped),
+  INDEX (source),
+  INDEX (field),
+  INDEX (subfields),
+  INDEX (componentsCount),
+  INDEX (subdivsCount),
+  INDEX (vCount),
+  INDEX (xCount),
+  INDEX (yCount),
+  INDEX (zCount)
 ) ENGINE=MYISAM DEFAULT CHARSET="UTF8";
 
+# ALTER TABLE subjects ADD INDEX (subfields);
 
 select headingStripped, count(*) as hsCount from subjects group by headingStripped HAVING hsCount > 2 order by hsCount DESC LIMIT 0,10;
 SELECT hsCount, count(*) FROM (select headingStripped, count(*) as hsCount from subjects group by headingStripped) as tempTBL group by hsCount;
 
+select componentsCount, count(*) from subjects group by componentsCount order by componentsCount DESC;
+
+http://dev.mysql.com/doc/refman/5.1/en/create-table-select.html
 
 :
 :   @author Kevin Ford (kefo@loc.gov)
