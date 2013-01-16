@@ -41,7 +41,7 @@ MARCDF = "{http://www.loc.gov/MARC21/slim}datafield"
 MARCSF = "{http://www.loc.gov/MARC21/slim}subfield"
 
 DATADIR = "../data/xml/"
-DATADIR = "../data/xml-bfid2/"
+# DATADIR = "../data/xml-bfid2/"
 
 FILES = glob.glob(DATADIR + '*.xml')
 
