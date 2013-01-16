@@ -162,6 +162,7 @@ declare function processrecord:processrecord
                 return $sf2
             else 
                 ""
+        let $source := fn:replace($source, "\.|\(|\)|,|:", "")
         let $source := fn:replace($source, '\[from old catalog\]', "")
         
         let $fieldOrder := fn:string-join($s/marcxml:subfield[fn:matches(@code, "a|t|v|x|y|z")]/@code, "")
